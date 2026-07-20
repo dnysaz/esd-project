@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { GraduationCap, LogOut, Settings } from "lucide-react";
+import { readLocalConfig } from "@/components/ui/theme-provider";
 
 interface NavbarProps {
   /** Extra content on the left side (before logo), e.g. mobile menu toggle */
@@ -19,7 +20,10 @@ interface NavbarProps {
 
 export default function Navbar({ leftContent, rightContent, hideAuth, showSignOut }: NavbarProps) {
   const [userName, setUserName] = useState<string | null>(null);
-  const [siteTitle, setSiteTitle] = useState("ESD Project");
+  // Read siteTitle from localStorage sync to avoid flash of default
+  const [siteTitle, setSiteTitle] = useState(() =>
+    readLocalConfig().siteTitle || "ESD Project"
+  );
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 

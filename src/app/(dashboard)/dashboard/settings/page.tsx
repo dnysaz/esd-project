@@ -16,7 +16,7 @@ import {
   Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { THEMES, applyTheme } from "@/components/ui/theme-provider";
+import { THEMES, applyTheme, saveLocalConfig } from "@/components/ui/theme-provider";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -147,8 +147,17 @@ export default function SettingsPage() {
       setOriginalFooterText(newFooter);
       setMessage({ type: "success", text: "Site settings updated!" });
 
-      // Dispatch custom event so Navbar & Footer update instantly
+      // Persist to localStorage so Navbar & Footer load instantly on reload
       const theme = THEMES.find((t) => t.id === selectedTheme) || THEMES[0];
+      saveLocalConfig({
+        siteTitle: newTitle,
+        footerText: newFooter,
+        primary: theme.primary,
+        dark: theme.dark,
+        light: theme.light,
+      });
+
+      // Dispatch custom event so Navbar & Footer update instantly (no reload)
       window.dispatchEvent(
         new CustomEvent("site-config-changed", {
           detail: {
@@ -364,6 +373,12 @@ export default function SettingsPage() {
                         theme_light: theme.light,
                       })
                       .eq("id", "00000000-0000-0000-0000-000000000001");
+                    // Persist theme to localStorage
+                    saveLocalConfig({
+                      primary: theme.primary,
+                      dark: theme.dark,
+                      light: theme.light,
+                    });
                     // Dispatch event for other components
                     window.dispatchEvent(
                       new CustomEvent("site-config-changed", {

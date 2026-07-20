@@ -3,9 +3,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Heart } from "lucide-react";
+import { readLocalConfig } from "@/components/ui/theme-provider";
 
 export default function Footer() {
-  const [footerText, setFooterText] = useState<string | null>(null);
+  // Read footerText from localStorage sync to avoid flash of default
+  const [footerText, setFooterText] = useState<string | null>(
+    () => readLocalConfig().footerText || null
+  );
 
   // Listen for live config updates from settings page
   const handleConfigChange = useCallback((e: Event) => {

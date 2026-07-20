@@ -27,7 +27,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var t = JSON.parse(localStorage.getItem("esd-theme"));
+                var t = JSON.parse(localStorage.getItem("esd-config"));
                 if (t && t.primary) {
                   var r = document.documentElement;
                   r.style.setProperty("--color-primary", t.primary, "important");

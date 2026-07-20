@@ -42,7 +42,24 @@ export const THEMES = [
   },
 ] as const;
 
-const STORAGE_KEY = "esd-theme";
+const STORAGE_KEY = "esd-config";
+
+/** Read full config from localStorage (sync — no flash on reload) */
+export function readLocalConfig(): Record<string, any> {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return {};
+}
+
+/** Save field(s) to localStorage config */
+export function saveLocalConfig(values: Record<string, any>) {
+  try {
+    const current = readLocalConfig();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...current, ...values }));
+  } catch {}
+}
 
 /** Apply theme CSS variables to <html> element and persist to localStorage */
 export function applyTheme(primary: string, dark: string, light: string) {
@@ -51,11 +68,7 @@ export function applyTheme(primary: string, dark: string, light: string) {
   root.style.setProperty("--color-primary-dark", dark, "important");
   root.style.setProperty("--color-primary-light", light, "important");
   // Persist to localStorage so it survives page reload
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ primary, dark, light }));
-  } catch {
-    // localStorage might be unavailable
-  }
+  saveLocalConfig({ primary, dark, light });
 }
 
 export default function ThemeProvider({
@@ -67,16 +80,9 @@ export default function ThemeProvider({
     const supabase = createClient();
 
     // 1. Apply from localStorage instantly (sync, no flash)
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const theme = JSON.parse(saved);
-        if (theme?.primary) {
-          applyTheme(theme.primary, theme.dark, theme.light);
-        }
-      }
-    } catch {
-      // ignore
+    const saved = readLocalConfig();
+    if (saved?.primary) {
+      applyTheme(saved.primary, saved.dark, saved.light);
     }
 
     // 2. Fetch theme from DB on mount (backup, overwrites localStorage)
