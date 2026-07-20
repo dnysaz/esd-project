@@ -72,15 +72,15 @@ export default function Navbar({ leftContent, rightContent, hideAuth, showSignOu
       <div className="flex items-center gap-2">
         {leftContent}
 
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-white" />
+        <Link href="/" className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
-          <div>
-            <span className="font-semibold text-[15px] text-text tracking-tight">
+          <div className="min-w-0">
+            <span className="font-semibold text-[13px] sm:text-[15px] text-text tracking-tight truncate block max-w-[100px] sm:max-w-none">
               {siteTitle}
             </span>
-            <span className="text-[11px] text-text-secondary block -mt-0.5 leading-tight">
+            <span className="text-[11px] text-text-secondary hidden sm:block -mt-0.5 leading-tight">
               · by Diantari Kusuma
             </span>
           </div>
@@ -101,7 +101,7 @@ export default function Navbar({ leftContent, rightContent, hideAuth, showSignOu
               >
                 Dashboard
               </Link>
-              <span className="text-sm font-medium text-text-secondary whitespace-nowrap">
+              <span className="text-xs sm:text-sm font-medium text-text-secondary whitespace-nowrap truncate max-w-[70px] sm:max-w-none" title={userName || ""}>
                 Hi, {userName}
               </span>
               {/* Settings & Sign Out — only in dashboard */}
@@ -109,14 +109,14 @@ export default function Navbar({ leftContent, rightContent, hideAuth, showSignOu
                 <>
                   <Link
                     href="/dashboard/settings"
-                    className="btn-ghost text-sm"
+                    className="btn-ghost text-sm p-1.5 sm:px-4 sm:py-2"
                     title="Settings"
                   >
-                    <Settings className="w-4 h-4" />
+                    <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span className="hidden sm:inline">Settings</span>
                   </Link>
-                  <button onClick={handleLogout} className="btn-ghost text-sm">
-                    <LogOut className="w-4 h-4" />
+                  <button onClick={handleLogout} className="btn-ghost text-sm p-1.5 sm:px-4 sm:py-2" title="Sign Out">
+                    <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span className="hidden sm:inline">Sign Out</span>
                   </button>
                 </>

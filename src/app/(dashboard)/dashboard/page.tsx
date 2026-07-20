@@ -52,7 +52,7 @@ export default function DashboardPage() {
       <div className="animate-fade-in">
         {/* Hero skeleton */}
         <div className="mb-8">
-          <div className="bg-primary/70 rounded-xl p-6 md:p-8">
+          <div className="bg-gray-100 rounded-xl p-6 md:p-8 border border-border">
             <div className="skeleton h-4 w-28 rounded-full mb-3" />
             <div className="skeleton h-8 w-64 mb-2" />
             <div className="skeleton h-4 w-96 max-w-full" />

@@ -212,7 +212,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
           {/* Back button skeleton */}
           <div className="skeleton h-8 w-28 rounded-full mb-2" />
           {/* Header skeleton */}
-          <div className="bg-primary/70 rounded-xl p-4 md:p-5 mb-4">
+          <div className="bg-gray-100 rounded-xl p-4 md:p-5 mb-4 border border-border">
             <div className="flex items-start justify-between">
               <div className="space-y-3">
                 <div className="skeleton h-4 w-28 rounded-full" />
@@ -363,34 +363,40 @@ export default function ClassSubmissionsPage({ params }: Props) {
               )}
             </div>
 
+            {/* Mobile scroll hint */}
+            <div className="text-xs text-text-secondary/60 mb-2 flex items-center gap-1 sm:hidden">
+              <span>Swipe horizontally to see all tasks</span>
+              <span className="text-lg">→</span>
+            </div>
+
             {/* Scrollable table wrapper */}
             <div
               ref={tableRef}
               className="bg-white rounded-xl border border-border overflow-hidden"
             >
-              <div className="overflow-x-auto overflow-y-auto max-h-[70vh]">
+              <div className="overflow-x-auto overflow-y-auto max-h-[70vh] overscroll-x-contain">
                 <table className="w-full text-sm border-collapse" id="submissions-table">
                   {/* Sticky header */}
                   <thead>
                     <tr className="bg-gray-50 border-b-2 border-border">
-                      <th className="sticky left-0 bg-gray-50 z-10 text-left px-4 py-3 font-semibold text-text-secondary min-w-[40px] border-r border-border">
+                      <th className="sticky left-0 bg-gray-50 z-10 text-left px-2 sm:px-4 py-3 font-semibold text-text-secondary w-[36px] sm:min-w-[40px] border-r border-border">
                         No
                       </th>
-                      <th className="sticky left-[40px] bg-gray-50 z-10 text-left px-4 py-3 font-semibold text-text-secondary min-w-[120px] border-r border-border">
+                      <th className="sticky left-[36px] sm:left-[40px] bg-gray-50 z-10 text-left px-2 sm:px-4 py-3 font-semibold text-text-secondary w-[80px] sm:min-w-[120px] border-r border-border">
                         NIM
                       </th>
-                      <th className="sticky left-[160px] bg-gray-50 z-10 text-left px-4 py-3 font-semibold text-text-secondary min-w-[180px] border-r border-border">
+                      <th className="sticky left-[116px] sm:left-[160px] bg-gray-50 z-10 text-left px-2 sm:px-4 py-3 font-semibold text-text-secondary w-[120px] sm:min-w-[180px] border-r border-border">
                         Name
                       </th>
                       {tasks.map((task) => (
                         <th
                           key={task.id}
-                          className="text-center px-3 py-3 font-semibold text-text-secondary min-w-[200px] max-w-[300px] border-r border-border last:border-r-0"
+                          className="text-center px-2 sm:px-3 py-3 font-semibold text-text-secondary min-w-[120px] sm:min-w-[160px] border-r border-border last:border-r-0"
                         >
-                          <div className="text-xs uppercase tracking-wider text-text-secondary/70 mb-1">
+                          <div className="text-[10px] sm:text-xs uppercase tracking-wider text-text-secondary/70 mb-1">
                             Task
                           </div>
-                          <div className="text-sm font-medium text-text truncate">
+                          <div className="text-xs sm:text-sm font-medium text-text truncate max-w-[100px] sm:max-w-[200px]">
                             {task.title}
                           </div>
                         </th>
@@ -408,14 +414,20 @@ export default function ClassSubmissionsPage({ params }: Props) {
                             isEven ? "bg-white" : "bg-gray-50"
                           }`}
                         >
-                          {/* Sticky columns */}
-                          <td className="sticky left-0 z-10 px-4 py-3 text-text-secondary text-center border-r border-border bg-inherit">
+                          {/* Sticky columns — explicit bg + hover to fix mobile scroll */}
+                          <td className={`sticky left-0 z-10 px-2 sm:px-4 py-3 text-text-secondary text-center border-r border-border ${
+                            isEven ? "bg-white hover:bg-blue-50/50" : "bg-gray-50 hover:bg-blue-50/50"
+                          }`}>
                             {rowIndex + 1}
                           </td>
-                          <td className="sticky left-[40px] z-10 px-4 py-3 font-mono text-text border-r border-border bg-inherit">
+                          <td className={`sticky left-[36px] sm:left-[40px] z-10 px-2 sm:px-4 py-3 font-mono text-text border-r border-border ${
+                            isEven ? "bg-white hover:bg-blue-50/50" : "bg-gray-50 hover:bg-blue-50/50"
+                          }`}>
                             {student.nim}
                           </td>
-                          <td className="sticky left-[160px] z-10 px-4 py-3 font-medium text-text border-r border-border bg-inherit whitespace-nowrap">
+                          <td className={`sticky left-[116px] sm:left-[160px] z-10 px-2 sm:px-4 py-3 font-medium text-text border-r border-border ${
+                            isEven ? "bg-white hover:bg-blue-50/50" : "bg-gray-50 hover:bg-blue-50/50"
+                          } whitespace-nowrap`}>
                             {student.name}
                           </td>
 
@@ -428,7 +440,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
                             return (
                               <td
                                 key={task.id}
-                                className={`px-3 py-3 text-center border-r border-border last:border-r-0 ${
+                                className={`px-2 sm:px-3 py-3 text-center border-r border-border last:border-r-0 ${
                                   sub
                                     ? sub.score !== null
                                       ? showScores

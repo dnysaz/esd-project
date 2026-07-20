@@ -42,12 +42,20 @@ export const THEMES = [
   },
 ] as const;
 
-/** Apply theme CSS variables to <html> element */
+const STORAGE_KEY = "esd-theme";
+
+/** Apply theme CSS variables to <html> element and persist to localStorage */
 export function applyTheme(primary: string, dark: string, light: string) {
   const root = document.documentElement;
-  root.style.setProperty("--color-primary", primary);
-  root.style.setProperty("--color-primary-dark", dark);
-  root.style.setProperty("--color-primary-light", light);
+  root.style.setProperty("--color-primary", primary, "important");
+  root.style.setProperty("--color-primary-dark", dark, "important");
+  root.style.setProperty("--color-primary-light", light, "important");
+  // Persist to localStorage so it survives page reload
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ primary, dark, light }));
+  } catch {
+    // localStorage might be unavailable
+  }
 }
 
 export default function ThemeProvider({
@@ -58,7 +66,20 @@ export default function ThemeProvider({
   useEffect(() => {
     const supabase = createClient();
 
-    // Fetch theme from DB on mount
+    // 1. Apply from localStorage instantly (sync, no flash)
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const theme = JSON.parse(saved);
+        if (theme?.primary) {
+          applyTheme(theme.primary, theme.dark, theme.light);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    // 2. Fetch theme from DB on mount (backup, overwrites localStorage)
     supabase
       .from("app_config")
       .select("theme_color, theme_dark, theme_light")

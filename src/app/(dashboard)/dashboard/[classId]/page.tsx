@@ -85,7 +85,7 @@ export default function ClassDetailPage({ params }: Props) {
         {/* Back button skeleton */}
         <div className="skeleton h-8 w-28 rounded-full mb-6" />
         {/* Class header skeleton */}
-        <div className="bg-primary/70 rounded-xl p-6 md:p-8 mb-8">
+        <div className="bg-gray-100 rounded-xl p-6 md:p-8 mb-8 border border-border">
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div className="skeleton h-8 w-64" />
