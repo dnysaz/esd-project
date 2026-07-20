@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1a73e8;
+  --color-primary-dark: #1557b0;
+  --color-primary-light: #e8f0fe;
+  --color-secondary: #5f6368;
+  --color-success: #137333;
+  --color-warning: #f9ab00;
+  --color-danger: #d93025;
+  --color-surface: #ffffff;
+  --color-background: #f0f0f0;
+  --color-border: #e0e0e0;
+  --color-text: #202124;
+  --color-text-secondary: #5f6368;
+
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-red-50: #fef2f2;
+  --color-red-500: #ef4444;
+  --color-red-700: #b91c1c;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+
+  --font-family-sans: "Google Sans", "Inter", system-ui, -apple-system, sans-serif;
+
+  --radius-card: 0.5rem;
+  --radius-button: 9999px;
+}
+
+/* ============ Base Styles ============ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============ Google Classroom Card ============ */
+
+.classroom-card {
+  @apply bg-white rounded-xl border border-border overflow-hidden transition-all duration-200;
+}
+
+.classroom-card:hover {
+  @apply -translate-y-0.5;
+}
+
+.classroom-card-header {
+  @apply h-24 px-5 py-4 flex flex-col justify-end;
+}
+
+/* ============ Classroom Button ============ */
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-primary text-white px-6 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-primary-dark active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary disabled:active:scale-100;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-transparent text-primary border border-border px-6 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-primary-light active:scale-[0.97];
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-transparent text-text-secondary px-4 py-2 text-sm font-medium transition-all duration-200 hover:bg-black/5 active:scale-[0.97];
+}
+
+.btn-danger {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-danger text-white px-6 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-red-700 active:scale-[0.97];
+}
+
+.btn-icon {
+  @apply inline-flex items-center justify-center rounded-full p-2 text-text-secondary transition-all duration-200 hover:bg-black/5;
+}
+
+/* ============ Input ============ */
+
+.input-field {
+  @apply w-full rounded-lg border border-border bg-white px-4 py-3 text-sm text-text placeholder:text-text-secondary/60 transition-all duration-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20;
+}
+
+/* ============ Classroom Navbar ============ */
+
+.navbar {
+  @apply fixed top-0 left-0 right-0 h-16 bg-white border-b border-border flex items-center px-4 md:px-8 z-50;
+}
+
+/* ============ Animations ============ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-fade-in-delay-1 {
+  animation: fadeIn 0.3s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fadeIn 0.3s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delay-3 {
+  animation: fadeIn 0.3s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+/* ============ Skeleton Loading ============ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  @apply bg-gray-200 rounded;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ============ Scrollbar ============ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
