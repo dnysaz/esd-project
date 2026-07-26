@@ -9,8 +9,6 @@ import {
   Plus,
   ClipboardList,
   Users,
-  Trash2,
-  Pencil,
   Upload,
   Table2,
 } from "lucide-react";
@@ -64,14 +62,14 @@ export default function ClassDetailPage({ params }: Props) {
       }
 
       // Enrich tasks
-      const enrichedTasks = (tasksData || []).map((t: any) => ({
+      const enrichedTasks = (tasksData || []).map((t) => ({
         ...t,
         submission_count: submissionMap.get(t.id) || 0,
         total_students: sCount || 0,
       }));
 
       setClassData(classInfo);
-      setTasks(enrichedTasks);
+      setTasks(enrichedTasks as Task[]);
       setStudentCount(sCount || 0);
       setLoading(false);
     }
@@ -215,12 +213,9 @@ export default function ClassDetailPage({ params }: Props) {
         onClose={() => setShowCreateTask(false)}
         classId={classId}
         onCreated={(newTask) => {
+          const t = newTask as unknown as Task;
           setTasks((prev) => [
-            {
-              ...newTask,
-              submission_count: 0,
-              total_students: studentCount,
-            },
+            { ...t, submission_count: 0, total_students: studentCount } as Task & { submission_count: number; total_students: number },
             ...prev,
           ]);
         }}

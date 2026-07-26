@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { GraduationCap, Loader2 } from "lucide-react";
 import { Modal } from "./modal";
@@ -12,7 +11,7 @@ interface EditClassModalProps {
   classId: string;
   currentName: string;
   currentDescription: string;
-  onUpdated?: (updated: any) => void;
+  onUpdated?: (updated: Record<string, unknown>) => void;
 }
 
 export function EditClassModal({
@@ -23,7 +22,6 @@ export function EditClassModal({
   currentDescription,
   onUpdated,
 }: EditClassModalProps) {
-  const router = useRouter();
   const [name, setName] = useState(currentName);
   const [description, setDescription] = useState(currentDescription);
   const [loading, setLoading] = useState(false);
@@ -32,9 +30,12 @@ export function EditClassModal({
   // Sync when modal opens with fresh data
   useEffect(() => {
     if (isOpen) {
-      setName(currentName);
-      setDescription(currentDescription);
-      setError(null);
+      const id = setTimeout(() => {
+        setName(currentName);
+        setDescription(currentDescription);
+        setError(null);
+      }, 0);
+      return () => clearTimeout(id);
     }
   }, [isOpen, currentName, currentDescription]);
 

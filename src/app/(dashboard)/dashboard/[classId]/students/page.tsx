@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
+import { formatNIM } from "@/lib/utils";
 import type { Student } from "@/types";
 
 interface Props {
@@ -62,7 +63,7 @@ export default function StudentsPage({ params }: Props) {
           .from("students")
           .select("*")
           .eq("class_id", classId)
-          .order("created_at", { ascending: true }),
+          .order("nim", { ascending: true }),
 
       // Only show if user owns this class
       ]);
@@ -118,11 +119,13 @@ export default function StudentsPage({ params }: Props) {
     }
 
     setStudents((prev) =>
-      prev.map((s) =>
-        s.id === studentId
-          ? { ...s, nim: editNim.trim(), name: editName.trim() }
-          : s
-      )
+      prev
+        .map((s) =>
+          s.id === studentId
+            ? { ...s, nim: editNim.trim(), name: editName.trim() }
+            : s
+        )
+        .sort((a, b) => a.nim.localeCompare(b.nim))
     );
 
     setEditingId(null);
@@ -157,7 +160,9 @@ export default function StudentsPage({ params }: Props) {
     }
 
     if (data) {
-      setStudents((prev) => [...prev, data as Student]);
+      setStudents((prev) =>
+        [...prev, data as Student].sort((a, b) => a.nim.localeCompare(b.nim))
+      );
     }
 
     setNewNim("");
@@ -326,8 +331,9 @@ export default function StudentsPage({ params }: Props) {
               <input
                 type="text"
                 value={newNim}
-                onChange={(e) => setNewNim(e.target.value)}
-                placeholder="NIM"
+                onChange={(e) => setNewNim(formatNIM(e.target.value))}
+                placeholder="Contoh: 26.1.1.01.001"
+                maxLength={13}
                 className="input-field py-2 text-sm w-full"
               />
             </div>
@@ -432,7 +438,8 @@ export default function StudentsPage({ params }: Props) {
                         <input
                           type="text"
                           value={editNim}
-                          onChange={(e) => setEditNim(e.target.value)}
+                          onChange={(e) => setEditNim(formatNIM(e.target.value))}
+                          maxLength={13}
                           className="input-field py-1.5 px-2 text-sm font-mono w-full"
                         />
                       ) : (

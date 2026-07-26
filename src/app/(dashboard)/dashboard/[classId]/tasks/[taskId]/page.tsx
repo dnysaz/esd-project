@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { EditTaskModal } from "@/components/ui/edit-task-modal";
-import type { Submission } from "@/types";
+import type { Submission, Student, Task } from "@/types";
 
 interface Props {
   params: Promise<{ classId: string; taskId: string }>;
@@ -25,10 +25,10 @@ interface Props {
 export default function TaskDetailPage({ params }: Props) {
   const { classId, taskId } = use(params);
   const router = useRouter();
-  const [task, setTask] = useState<any>(null);
-  const [classData, setClassData] = useState<any>(null);
-  const [students, setStudents] = useState<any[]>([]);
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [task, setTask] = useState<Task | null>(null);
+  const [classData, setClassData] = useState<{ name: string } | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -125,7 +125,7 @@ export default function TaskDetailPage({ params }: Props) {
         )
       );
     } else {
-      console.error("Failed to save score:", JSON.stringify(error), error);
+      console.error("Failed to save score:", JSON.stringify(error));
     }
     setSavingScore(null);
   };
@@ -421,11 +421,10 @@ export default function TaskDetailPage({ params }: Props) {
         isOpen={showEditTask}
         onClose={() => setShowEditTask(false)}
         classId={classId}
-        taskId={taskId}
-        currentTitle={task.title}
+        taskId={taskId}          currentTitle={task.title}
         currentDescription={task.description || ""}
         onUpdated={(updated) => {
-          setTask((prev: any) => ({ ...prev, ...updated }));
+          setTask((prev) => ({ ...(prev || {}), ...updated }) as Task);
         }}
       />
 

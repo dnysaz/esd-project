@@ -1,7 +1,6 @@
 "use client";
 
 import { use, useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import {
   Search,
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Modal } from "@/components/ui/modal";
+import { formatNIM } from "@/lib/utils";
 import type { Student, Task, Submission } from "@/types";
 
 interface Props {
@@ -56,7 +56,6 @@ function clearAccessState(classId: string) {
 
 export default function StudentAccessPage({ params }: Props) {
   const { classId } = use(params);
-  const router = useRouter();
   const [className, setClassName] = useState("");
   const [students, setStudents] = useState<Student[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -132,13 +131,15 @@ export default function StudentAccessPage({ params }: Props) {
     }
   }, [selectedStudent, nimVerification, verified, classId, initialRestored]);
 
-  // Filter students based on search
+  // Filter students based on search, sorted by NIM ascending
   const filteredStudents = searchQuery.trim()
-    ? students.filter(
-        (s) =>
-          s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.nim.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    ? students
+        .filter(
+          (s) =>
+            s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            s.nim.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .sort((a, b) => a.nim.localeCompare(b.nim))
     : [];
 
   const handleSelectStudent = (student: Student) => {
@@ -263,16 +264,17 @@ export default function StudentAccessPage({ params }: Props) {
                 type="text"
                 value={nimVerification}
                 onChange={(e) => {
-                  setNimVerification(e.target.value);
+                  setNimVerification(formatNIM(e.target.value));
                   setVerificationError(null);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleVerify();
                 }}
-                placeholder="e.g. 220123456"
+                placeholder="e.g. 26.1.1.01.001"
                 className="input-field text-center text-lg font-mono"
                 autoFocus
                 inputMode="numeric"
+                maxLength={13}
               />
 
               {verificationError && (
@@ -284,7 +286,7 @@ export default function StudentAccessPage({ params }: Props) {
 
               <button
                 onClick={handleVerify}
-                disabled={!nimVerification.trim()}
+                disabled={nimVerification.trim().length < 13}
                 className="btn-primary w-full mt-4 py-3"
               >
                 <Check className="w-4 h-4" />
@@ -471,7 +473,7 @@ function StudentTasksPage({
         // Restore saved state after tasks are loaded
         const saved = loadTasksState(studentId);
         if (saved) {
-          if (saved.activeTask && tasksData.some((t: any) => t.id === saved.activeTask)) {
+          if (saved.activeTask && tasksData.some((t: Record<string, unknown>) => t.id === saved.activeTask)) {
             setActiveTask(saved.activeTask);
           }
           if (saved.linkValue) setLinkValue(saved.linkValue);
@@ -542,7 +544,7 @@ function StudentTasksPage({
         setSubmittedTaskTitle(taskTitle);
         setShowSuccess(true);
       }
-    } catch (err) {
+    } catch {
       setSubmitError("Failed to submit. Please try again.");
       setSubmitting(false);
     }

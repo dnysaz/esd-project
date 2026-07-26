@@ -45,6 +45,7 @@ export const THEMES = [
 const STORAGE_KEY = "esd-config";
 
 /** Read full config from localStorage (sync — no flash on reload) */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function readLocalConfig(): Record<string, any> {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -54,6 +55,7 @@ export function readLocalConfig(): Record<string, any> {
 }
 
 /** Save field(s) to localStorage config */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function saveLocalConfig(values: Record<string, any>) {
   try {
     const current = readLocalConfig();

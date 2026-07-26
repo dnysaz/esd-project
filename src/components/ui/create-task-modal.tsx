@@ -10,7 +10,7 @@ interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   classId: string;
-  onCreated?: (newTask: any) => void;
+  onCreated?: (newTask: Record<string, unknown>) => void;
 }
 
 export function CreateTaskModal({ isOpen, onClose, classId, onCreated }: CreateTaskModalProps) {

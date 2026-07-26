@@ -1,11 +1,9 @@
 "use client";
 
-import { use, useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { use, useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   ArrowLeft,
-  Download,
   FileSpreadsheet,
   FileText,
   ClipboardList,
@@ -27,7 +25,6 @@ interface Props {
 
 export default function ClassSubmissionsPage({ params }: Props) {
   const { classId } = use(params);
-  const router = useRouter();
   const [className, setClassName] = useState("");
   const [students, setStudents] = useState<Student[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -46,7 +43,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
       const [{ data: classData }, { data: studentsData }, { data: tasksData }, { data: submissionsData }] =
         await Promise.all([
           supabase.from("classes").select("name").eq("id", classId).single(),
-          supabase.from("students").select("*").eq("class_id", classId).order("created_at", { ascending: true }),
+          supabase.from("students").select("*").eq("class_id", classId).order("nim", { ascending: true }),
           supabase.from("tasks").select("*").eq("class_id", classId).order("created_at", { ascending: true }),
           supabase.from("submissions").select("*, students!inner(nim, name)").eq("students.class_id", classId),
         ]);
@@ -62,10 +59,13 @@ export default function ClassSubmissionsPage({ params }: Props) {
   }, [classId]);
 
   // Build lookup map: `${studentId}_${taskId}` -> submission
-  const submissionMap = new Map<string, Submission>();
-  for (const sub of submissions) {
-    submissionMap.set(`${sub.student_id}_${sub.task_id}`, sub);
-  }
+  const submissionMap = useMemo(() => {
+    const map = new Map<string, Submission>();
+    for (const sub of submissions) {
+      map.set(`${sub.student_id}_${sub.task_id}`, sub);
+    }
+    return map;
+  }, [submissions]);
 
   // ============ Export to Excel ============
   const handleExportExcel = useCallback(() => {
@@ -176,6 +176,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
           fillColor: [245, 245, 245],
         },
         columnStyles: colStyles,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         didParseCell: (data: any) => {
           // Color-code score cells (columns after index 2)
           if (

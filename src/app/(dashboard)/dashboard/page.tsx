@@ -8,13 +8,14 @@ import { Plus, Users, ClipboardList, GraduationCap, Pencil } from "lucide-react"
 import { DeleteClassForm } from "./delete-form";
 import { CreateClassModal } from "@/components/ui/create-class-modal";
 import { EditClassModal } from "@/components/ui/edit-class-modal";
-import type { Class } from "@/types";
 
 export default function DashboardPage() {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [classes, setClasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editClass, setEditClass] = useState<any | null>(null);
   const [lecturerName, setLecturerName] = useState("");
 

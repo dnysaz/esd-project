@@ -9,7 +9,7 @@ import { Modal } from "./modal";
 interface CreateClassModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreated?: (newClass: any) => void;
+  onCreated?: (newClass: Record<string, unknown>) => void;
 }
 
 export function CreateClassModal({ isOpen, onClose, onCreated }: CreateClassModalProps) {

@@ -74,7 +74,7 @@ export default function UploadStudentsPage({ params }: Props) {
       }
 
       setParsedStudents(students);
-    } catch (err) {
+    } catch {
       setError("Failed to parse Excel file. Make sure it's a valid .xlsx file.");
     }
 

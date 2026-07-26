@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { ClipboardList, Loader2 } from "lucide-react";
 import { Modal } from "./modal";
@@ -13,19 +12,17 @@ interface EditTaskModalProps {
   taskId: string;
   currentTitle: string;
   currentDescription: string;
-  onUpdated?: (updated: any) => void;
+  onUpdated?: (updated: Record<string, unknown>) => void;
 }
 
 export function EditTaskModal({
   isOpen,
   onClose,
-  classId,
   taskId,
   currentTitle,
   currentDescription,
   onUpdated,
 }: EditTaskModalProps) {
-  const router = useRouter();
   const [title, setTitle] = useState(currentTitle);
   const [description, setDescription] = useState(currentDescription);
   const [loading, setLoading] = useState(false);
@@ -34,9 +31,12 @@ export function EditTaskModal({
   // Sync when modal opens with fresh data
   useEffect(() => {
     if (isOpen) {
-      setTitle(currentTitle);
-      setDescription(currentDescription);
-      setError(null);
+      const id = setTimeout(() => {
+        setTitle(currentTitle);
+        setDescription(currentDescription);
+        setError(null);
+      }, 0);
+      return () => clearTimeout(id);
     }
   }, [isOpen, currentTitle, currentDescription]);
 
