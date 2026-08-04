@@ -190,11 +190,11 @@ export default function ClassDetailPage({ params }: Props) {
           All Submissions
         </Link>
         <Link
-          href={`/dashboard/${classId}/blank-submissions`}
+          href={`/dashboard/${classId}/blank-scores`}
           className="btn-secondary"
         >
           <FileText className="w-4 h-4" />
-          Blank Task Submissions
+          Blank Task Scores
         </Link>
       </div>
 
