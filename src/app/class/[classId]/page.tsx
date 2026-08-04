@@ -397,7 +397,7 @@ export default function StudentAccessPage({ params }: Props) {
 
 const TASKS_STORAGE_KEY = (sid: string) => `student_tasks_${sid}`;
 
-function saveTasksState(studentId: string, state: { activeTask?: string | null; linkValue?: string }) {
+function saveTasksState(studentId: string, state: { activeTask?: string | null; linkValue?: string; answerValue?: string }) {
   try {
     const existing = JSON.parse(sessionStorage.getItem(TASKS_STORAGE_KEY(studentId)) || "{}");
     sessionStorage.setItem(TASKS_STORAGE_KEY(studentId), JSON.stringify({ ...existing, ...state }));
@@ -438,6 +438,7 @@ function StudentTasksPage({
   const [initialRestored, setInitialRestored] = useState(false);
   const [activeTask, setActiveTask] = useState<string | null>(null);
   const [linkValue, setLinkValue] = useState("");
+  const [answerValue, setAnswerValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -477,6 +478,7 @@ function StudentTasksPage({
             setActiveTask(saved.activeTask);
           }
           if (saved.linkValue) setLinkValue(saved.linkValue);
+          if (saved.answerValue) setAnswerValue(saved.answerValue);
         }
       }
 
@@ -490,23 +492,40 @@ function StudentTasksPage({
   // Save active task and link value to sessionStorage on change
   useEffect(() => {
     if (initialRestored) {
-      saveTasksState(studentId, { activeTask, linkValue });
+      saveTasksState(studentId, { activeTask, linkValue, answerValue });
     }
-  }, [activeTask, linkValue, studentId, initialRestored]);
+  }, [activeTask, linkValue, answerValue, studentId, initialRestored]);
 
-  const handleSubmitLink = async (taskId: string) => {
-    if (!linkValue.trim()) return;
+  const handleSubmitTask = async (taskId: string) => {
+    const task = tasks.find((t) => t.id === taskId);
+    const isBlank = task?.task_type === "blank";
+    const value = isBlank ? answerValue.trim() : linkValue.trim();
+
+    if (!value) return;
     setSubmitting(true);
     setSubmitError(null);
 
     try {
       const supabase = createClient();
 
-      const { error } = await supabase.from("submissions").insert({
-        task_id: taskId,
-        student_id: studentId,
-        link: linkValue.trim(),
-      });
+      const payload: {
+        task_id: string;
+        student_id: string;
+        link?: string;
+        answer?: string;
+      } = isBlank
+        ? {
+            task_id: taskId,
+            student_id: studentId,
+            answer: value,
+          }
+        : {
+            task_id: taskId,
+            student_id: studentId,
+            link: value,
+          };
+
+      const { error } = await supabase.from("submissions").insert(payload);
 
       if (error) {
         setSubmitError(error.message);
@@ -536,6 +555,7 @@ function StudentTasksPage({
       // Clear saved state for this task after successful submission
       clearTasksState(studentId);
       setLinkValue("");
+      setAnswerValue("");
       setActiveTask(null);
       setSubmitting(false);
 
@@ -598,6 +618,7 @@ function StudentTasksPage({
           <div className="space-y-4 animate-fade-in">
             {tasks.map((task) => {
               const isSubmitted = submissions.has(task.id);
+              const isBlank = task.task_type === "blank";
 
               return (
                 <div
@@ -650,11 +671,12 @@ function StudentTasksPage({
                         onClick={() => {
                           setActiveTask(activeTask === task.id ? null : task.id);
                           setLinkValue("");
+                          setAnswerValue("");
                           setSubmitError(null);
                         }}
                         className="btn-primary text-sm px-4 py-2 whitespace-nowrap"
                       >
-                        Submit Link
+                        {isBlank ? "Answer" : "Submit Link"}
                       </button>
                     )}
                   </div>
@@ -662,25 +684,46 @@ function StudentTasksPage({
                   {/* Submit form */}
                   {activeTask === task.id && !isSubmitted && (
                     <div className="mt-4 pt-4 border-t border-border animate-fade-in">
-                      <label className="block text-sm font-medium text-text mb-2">
-                        Assignment Link
-                      </label>
-                      <input
-                        type="url"
-                        value={linkValue}
-                        onChange={(e) => {
-                          setLinkValue(e.target.value);
-                          setSubmitError(null);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && linkValue.trim()) {
-                            handleSubmitLink(task.id);
-                          }
-                        }}
-                        placeholder="https://drive.google.com/..."
-                        className="input-field"
-                        autoFocus
-                      />
+                      {isBlank ? (
+                        <>
+                          <label className="block text-sm font-medium text-text mb-2">
+                            Your Answer
+                          </label>
+                          <textarea
+                            value={answerValue}
+                            onChange={(e) => {
+                              setAnswerValue(e.target.value);
+                              setSubmitError(null);
+                            }}
+                            placeholder="Type your answer here..."
+                            className="input-field min-h-[160px] resize-y leading-relaxed"
+                            rows={8}
+                            autoFocus
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <label className="block text-sm font-medium text-text mb-2">
+                            Assignment Link
+                          </label>
+                          <input
+                            type="url"
+                            value={linkValue}
+                            onChange={(e) => {
+                              setLinkValue(e.target.value);
+                              setSubmitError(null);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && linkValue.trim()) {
+                                handleSubmitTask(task.id);
+                              }
+                            }}
+                            placeholder="https://drive.google.com/..."
+                            className="input-field"
+                            autoFocus
+                          />
+                        </>
+                      )}
 
                       {submitError && (
                         <p className="text-danger text-sm mt-2">{submitError}</p>
@@ -688,8 +731,11 @@ function StudentTasksPage({
 
                       <div className="flex items-center gap-2 mt-3">
                         <button
-                          onClick={() => handleSubmitLink(task.id)}
-                          disabled={!linkValue.trim() || submitting}
+                          onClick={() => handleSubmitTask(task.id)}
+                          disabled={
+                            (isBlank ? !answerValue.trim() : !linkValue.trim()) ||
+                            submitting
+                          }
                           className="btn-primary text-sm px-6 py-2"
                         >
                           {submitting ? (
@@ -707,8 +753,8 @@ function StudentTasksPage({
                       </div>
 
                       <p className="text-xs text-text-secondary/60 mt-2">
-                        ⚠️ Once submitted, the link cannot be edited. Contact
-                        your lecturer to make changes.
+                        ⚠️ Once submitted, your answer cannot be edited.
+                        Contact your lecturer to make changes.
                       </p>
                     </div>
                   )}
@@ -734,8 +780,8 @@ function StudentTasksPage({
             Thank You for Submitting! 🎉
           </h3>
           <p className="text-text-secondary text-sm max-w-sm mx-auto mb-1">
-            Your assignment link for <strong>{submittedTaskTitle}</strong> has
-            been received successfully.
+            Your submission for <strong>{submittedTaskTitle}</strong> has been
+            received successfully.
           </p>
           <p className="text-xs text-text-secondary/60 mt-3">
             You can close this window or check back later for your score.

@@ -271,7 +271,7 @@ export default function TaskDetailPage({ params }: Props) {
                     Name
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-text-secondary">
-                    Submission Link
+                    {task.task_type === "blank" ? "Answer" : "Submission Link"}
                   </th>
                   <th className="text-center px-4 py-3 font-medium text-text-secondary w-36">
                     Score (0-100)
@@ -300,24 +300,39 @@ export default function TaskDetailPage({ params }: Props) {
                       <td className="px-4 py-3 text-text">{student.name}</td>
                       <td className="px-4 py-3">
                         {sub ? (
-                          <div className="flex items-center gap-2 max-w-[400px]">
-                            <a
-                              href={sub.link.startsWith("http") ? sub.link : "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline inline-flex items-center gap-1 flex-1 min-w-0"
-                            >
-                              <ExternalLink className="w-3 h-3 flex-shrink-0" />
-                              <span className="truncate block min-w-0">{sub.link}</span>
-                            </a>
-                            <button
-                              onClick={() => setDeleteSubConfirm(sub.student_id)}
-                              className="btn-icon text-danger hover:bg-red-50 flex-shrink-0"
-                              title="Delete submission"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
+                          task.task_type === "blank" ? (
+                            <div className="flex items-start gap-2 max-w-[500px]">
+                              <div className="flex-1 min-w-0 whitespace-pre-wrap break-words text-text max-h-[180px] overflow-y-auto pr-1 leading-relaxed">
+                                {sub.answer}
+                              </div>
+                              <button
+                                onClick={() => setDeleteSubConfirm(sub.student_id)}
+                                className="btn-icon text-danger hover:bg-red-50 flex-shrink-0"
+                                title="Delete submission"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 max-w-[400px]">
+                              <a
+                                href={sub.link?.startsWith("http") ? sub.link : "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline inline-flex items-center gap-1 flex-1 min-w-0"
+                              >
+                                <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                                <span className="truncate block min-w-0">{sub.link}</span>
+                              </a>
+                              <button
+                                onClick={() => setDeleteSubConfirm(sub.student_id)}
+                                className="btn-icon text-danger hover:bg-red-50 flex-shrink-0"
+                                title="Delete submission"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          )
                         ) : (
                           <span className="text-text-secondary/60 italic">
                             Not submitted

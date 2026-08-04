@@ -17,11 +17,14 @@ export interface Student {
   created_at: string;
 }
 
+export type TaskType = "link" | "blank";
+
 export interface Task {
   id: string;
   class_id: string;
   title: string;
   description: string | null;
+  task_type: TaskType;
   created_at: string;
   updated_at: string;
 }
@@ -30,7 +33,8 @@ export interface Submission {
   id: string;
   task_id: string;
   student_id: string;
-  link: string;
+  link: string | null;
+  answer: string | null;
   score: number | null;
   submitted_at: string;
 }

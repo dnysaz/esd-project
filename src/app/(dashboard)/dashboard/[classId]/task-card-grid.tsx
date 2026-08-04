@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ClipboardList, CheckCircle2, Clock } from "lucide-react";
+import { ClipboardList, CheckCircle2, Clock, FileText, Link2 } from "lucide-react";
 import type { Task } from "@/types";
 
 interface TaskWithStats extends Task {
@@ -21,6 +21,7 @@ export function TaskCardGrid({ tasks, classId }: TaskCardGridProps) {
         const submitted = task.submission_count ?? 0;
         const total = task.total_students ?? 0;
         const percentage = total > 0 ? Math.round((submitted / total) * 100) : 0;
+        const isBlank = task.task_type === "blank";
 
         return (
           <Link
@@ -31,14 +32,34 @@ export function TaskCardGrid({ tasks, classId }: TaskCardGridProps) {
             {/* Task icon */}
             <div className="mb-3 flex justify-center">
               <div className="w-14 h-14 bg-primary-light rounded-2xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
-                <ClipboardList className="w-7 h-7 text-primary" />
+                {isBlank ? (
+                  <FileText className="w-7 h-7 text-primary" />
+                ) : (
+                  <ClipboardList className="w-7 h-7 text-primary" />
+                )}
               </div>
             </div>
 
             {/* Task name */}
-            <h3 className="font-medium text-sm text-text leading-tight line-clamp-2 mb-3">
+            <h3 className="font-medium text-sm text-text leading-tight line-clamp-2 mb-1.5">
               {task.title}
             </h3>
+
+            {/* Task type badge */}
+            <span
+              className={`inline-flex items-center gap-1 text-[11px] font-medium rounded-full px-2.5 py-0.5 mb-3 ${
+                isBlank
+                  ? "bg-primary-light text-primary"
+                  : "bg-gray-100 text-text-secondary"
+              }`}
+            >
+              {isBlank ? (
+                <FileText className="w-3 h-3" />
+              ) : (
+                <Link2 className="w-3 h-3" />
+              )}
+              {isBlank ? "Blank Task" : "Link Task"}
+            </span>
 
             {/* Submission percentage bar */}
             {total > 0 && (

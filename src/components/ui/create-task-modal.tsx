@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ClipboardList, Loader2 } from "lucide-react";
+import { ClipboardList, Link2, FileText, Loader2 } from "lucide-react";
 import { Modal } from "./modal";
+import type { TaskType } from "@/types";
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface CreateTaskModalProps {
 
 export function CreateTaskModal({ isOpen, onClose, classId, onCreated }: CreateTaskModalProps) {
   const router = useRouter();
+  const [taskType, setTaskType] = useState<TaskType>("link");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,6 +47,7 @@ export function CreateTaskModal({ isOpen, onClose, classId, onCreated }: CreateT
         class_id: classId,
         title: title.trim(),
         description: description.trim() || null,
+        task_type: taskType,
       })
       .select()
       .single();
@@ -56,6 +59,7 @@ export function CreateTaskModal({ isOpen, onClose, classId, onCreated }: CreateT
     }
 
     // Reset and close
+    setTaskType("link");
     setTitle("");
     setDescription("");
     onCreated?.(newTask);
@@ -75,6 +79,62 @@ export function CreateTaskModal({ isOpen, onClose, classId, onCreated }: CreateT
             {error}
           </div>
         )}
+
+        {/* Task type selection */}
+        <div>
+          <label className="block text-sm font-medium text-text mb-2">
+            Task Type
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setTaskType("link")}
+              className={`rounded-xl border-2 p-4 text-left transition-all duration-200 ${
+                taskType === "link"
+                  ? "border-primary bg-primary-light/30"
+                  : "border-border hover:border-primary/40"
+              }`}
+            >
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center mb-2 ${
+                  taskType === "link"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-text-secondary"
+                }`}
+              >
+                <Link2 className="w-4.5 h-4.5" />
+              </div>
+              <p className="font-medium text-sm text-text">Link Task</p>
+              <p className="text-xs text-text-secondary mt-0.5">
+                Students submit a link to their work
+              </p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setTaskType("blank")}
+              className={`rounded-xl border-2 p-4 text-left transition-all duration-200 ${
+                taskType === "blank"
+                  ? "border-primary bg-primary-light/30"
+                  : "border-border hover:border-primary/40"
+              }`}
+            >
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center mb-2 ${
+                  taskType === "blank"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-text-secondary"
+                }`}
+              >
+                <FileText className="w-4.5 h-4.5" />
+              </div>
+              <p className="font-medium text-sm text-text">Blank Task</p>
+              <p className="text-xs text-text-secondary mt-0.5">
+                Students type their answer directly
+              </p>
+            </button>
+          </div>
+        </div>
 
         <div>
           <label
@@ -100,14 +160,18 @@ export function CreateTaskModal({ isOpen, onClose, classId, onCreated }: CreateT
             htmlFor="modal-task-desc"
             className="block text-sm font-medium text-text mb-1.5"
           >
-            Description{" "}
+            {taskType === "blank" ? "Question" : "Description"}{" "}
             <span className="text-text-secondary/60">(optional)</span>
           </label>
           <textarea
             id="modal-task-desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g. Answer the questions and submit your Google Doc link"
+            placeholder={
+              taskType === "blank"
+                ? "e.g. Explain the causes of the Industrial Revolution in your own words"
+                : "e.g. Answer the questions and submit your Google Doc link"
+            }
             className="input-field min-h-[80px] resize-y"
             rows={3}
           />

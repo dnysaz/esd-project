@@ -37,18 +37,24 @@ CREATE TABLE IF NOT EXISTS tasks (
   class_id    UUID NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
   title       TEXT NOT NULL,
   description TEXT,
+  task_type   TEXT NOT NULL DEFAULT 'link' CHECK (task_type IN ('link', 'blank')),
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_tasks_class_id ON tasks(class_id);
 
+-- Pastikan kolom task_type ada (untuk tabel yang sudah ada sebelumnya)
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS task_type TEXT NOT NULL DEFAULT 'link'
+  CHECK (task_type IN ('link', 'blank'));
+
 -- 4. TABLE: submissions
 CREATE TABLE IF NOT EXISTS submissions (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   task_id      UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
   student_id   UUID NOT NULL REFERENCES students(id) ON DELETE CASCADE,
-  link         TEXT NOT NULL,
+  link         TEXT,
+  answer       TEXT,
   score        INTEGER CHECK (score >= 0 AND score <= 100),
   submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE(task_id, student_id)
@@ -59,6 +65,9 @@ CREATE INDEX IF NOT EXISTS idx_submissions_student_id ON submissions(student_id)
 
 -- Pastikan kolom score ada (untuk tabel yang sudah ada sebelumnya)
 ALTER TABLE submissions ADD COLUMN IF NOT EXISTS score INTEGER CHECK (score >= 0 AND score <= 100);
+-- Buat kolom link nullable & tambah kolom answer (untuk tabel yang sudah ada sebelumnya)
+ALTER TABLE submissions ALTER COLUMN link DROP NOT NULL;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS answer TEXT;
 
 -- 5. TABLE: app_config (singleton — menyimpan pengaturan global aplikasi)
 CREATE TABLE IF NOT EXISTS app_config (

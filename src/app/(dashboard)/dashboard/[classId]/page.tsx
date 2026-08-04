@@ -11,6 +11,7 @@ import {
   Users,
   Upload,
   Table2,
+  FileText,
 } from "lucide-react";
 import { DeleteClassButton } from "./delete-button";
 import { TaskCardGrid } from "./task-card-grid";
@@ -187,6 +188,13 @@ export default function ClassDetailPage({ params }: Props) {
         >
           <Table2 className="w-4 h-4" />
           All Submissions
+        </Link>
+        <Link
+          href={`/dashboard/${classId}/blank-submissions`}
+          className="btn-secondary"
+        >
+          <FileText className="w-4 h-4" />
+          Blank Task Submissions
         </Link>
       </div>
 
