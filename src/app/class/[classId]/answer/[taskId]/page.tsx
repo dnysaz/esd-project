@@ -217,7 +217,7 @@ export default function BlankAnswerPage({ params }: Props) {
             <ArrowLeft className="w-5 h-5" />
           </button>
         </header>
-        <main className="max-w-4xl mx-auto px-6 md:px-10 pt-20">
+        <main className="max-w-4xl mx-auto px-6 md:px-10 pt-[calc(var(--navbar-safe)_+_1rem)]">
           <div className="skeleton h-8 w-72 mb-4" />
           <div className="skeleton h-4 w-48" />
           <div className="border-t border-gray-300 my-8" />
@@ -264,7 +264,7 @@ export default function BlankAnswerPage({ params }: Props) {
       </header>
 
       {/* Blank paper body */}
-      <main className="flex-1 w-full max-w-4xl mx-auto px-6 md:px-10 pt-20 pb-5 flex flex-col">
+      <main className="flex-1 w-full max-w-4xl mx-auto px-6 md:px-10 pt-[calc(var(--navbar-safe)_+_1rem)] pb-5 flex flex-col">
         {task && (
           <>
             {/* Question */}

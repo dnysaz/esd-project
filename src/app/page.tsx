@@ -42,7 +42,7 @@ export default function HomePage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col pt-16">
+    <div className="min-h-screen bg-white flex flex-col pt-[var(--navbar-safe)]">
       <Navbar />
 
       {/* Main */}

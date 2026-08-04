@@ -9,7 +9,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background pt-16 flex flex-col">
+    <div className="min-h-screen bg-background pt-[var(--navbar-safe)] flex flex-col">
       {/* Simple Navbar — same as homepage */}
       <Navbar showSignOut />
 

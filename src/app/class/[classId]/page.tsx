@@ -183,7 +183,7 @@ export default function StudentAccessPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen pt-16 bg-background">
+    <div className="min-h-screen pt-[var(--navbar-safe)] bg-background">
       {/* Navbar */}
       <header className="navbar">
         <div className="flex items-center gap-2">
@@ -551,7 +551,7 @@ function StudentTasksPage({
   };
 
   return (
-    <div className="min-h-screen pt-16 bg-background">
+    <div className="min-h-screen pt-[var(--navbar-safe)] bg-background">
       <header className="navbar">
         <div className="flex items-center gap-2">
           <button onClick={onBack} className="btn-icon">

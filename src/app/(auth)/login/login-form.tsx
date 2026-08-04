@@ -39,7 +39,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12">
+    <div className="min-h-[calc(100vh-var(--navbar-safe))] flex items-center justify-center px-4 py-12">
     <div className="w-full max-w-md animate-fade-in">
       {/* Header */}
       <div className="text-center mb-8">

@@ -107,8 +107,15 @@ html {
 
 /* ============ Classroom Navbar ============ */
 
+:root {
+  --navbar-h: 4rem;
+  --navbar-safe: calc(4rem + env(safe-area-inset-top, 0px));
+}
+
 .navbar {
-  @apply fixed top-0 left-0 right-0 h-16 bg-white border-b border-border flex items-center px-4 md:px-8 z-50;
+  @apply fixed top-0 left-0 right-0 bg-white border-b border-border flex items-center px-4 md:px-8 z-50;
+  height: var(--navbar-safe);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* ============ Animations ============ */
