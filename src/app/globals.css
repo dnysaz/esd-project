@@ -54,6 +54,13 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+}
+
+/* Prevent double-tap & pinch zoom across the whole app */
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ============ Google Classroom Card ============ */
