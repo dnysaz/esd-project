@@ -44,7 +44,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
         await Promise.all([
           supabase.from("classes").select("name").eq("id", classId).single(),
           supabase.from("students").select("*").eq("class_id", classId).order("nim", { ascending: true }),
-          supabase.from("tasks").select("*").eq("class_id", classId).order("created_at", { ascending: true }),
+          supabase.from("tasks").select("*").eq("class_id", classId).eq("task_type", "link").order("created_at", { ascending: true }),
           supabase.from("submissions").select("*, students!inner(nim, name)").eq("students.class_id", classId),
         ]);
 
@@ -133,7 +133,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
       // Title row before table
       doc.setFontSize(14);
       doc.setTextColor(26, 115, 232);
-      doc.text(`${className} - All Submissions`, 14, 16);
+      doc.text(`${className} - Task Link Score`, 14, 16);
 
       doc.setFontSize(9);
       doc.setTextColor(95, 99, 104);
@@ -255,7 +255,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <School className="w-5 h-5 text-white/80 flex-shrink-0" />
-                <span className="text-sm text-white/70 font-medium">All Submissions</span>
+                <span className="text-sm text-white/70 font-medium">Task Link Score</span>
               </div>
               <h1 className="text-xl md:text-3xl font-bold mb-1 truncate">
                 {className}

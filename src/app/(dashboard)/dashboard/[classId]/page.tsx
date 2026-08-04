@@ -187,14 +187,14 @@ export default function ClassDetailPage({ params }: Props) {
           className="btn-secondary"
         >
           <Table2 className="w-4 h-4" />
-          All Submissions
+          Task Link Score
         </Link>
         <Link
           href={`/dashboard/${classId}/blank-scores`}
           className="btn-secondary"
         >
           <FileText className="w-4 h-4" />
-          Blank Task Scores
+          Blank Task Score
         </Link>
       </div>
 

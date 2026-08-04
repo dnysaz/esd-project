@@ -32,7 +32,7 @@ export default function BlankScoresPage({ params }: Props) {
       const [{ data: classData }, { data: studentsData }, { data: tasksData }, { data: submissionsData }] =
         await Promise.all([
           supabase.from("classes").select("name").eq("id", classId).eq("created_by", userData.user.id).single(),
-          supabase.from("students").select("*").eq("class_id", classId).order("name", { ascending: true }),
+          supabase.from("students").select("*").eq("class_id", classId).order("nim", { ascending: true }),
           supabase.from("tasks").select("*").eq("class_id", classId).eq("task_type", "blank").order("created_at", { ascending: true }),
           supabase.from("submissions").select("*, students!inner(class_id)").eq("students.class_id", classId),
         ]);
@@ -64,24 +64,6 @@ export default function BlankScoresPage({ params }: Props) {
     }
     return map;
   }, [submissions]);
-
-  // Compute per-student average across scored blank tasks
-  const studentAverage = useMemo(() => {
-    const map = new Map<string, number | null>();
-    for (const student of students) {
-      let sum = 0;
-      let count = 0;
-      for (const task of tasks) {
-        const sub = submissionMap.get(`${student.id}_${task.id}`);
-        if (sub?.score !== null && sub?.score !== undefined) {
-          sum += sub.score;
-          count++;
-        }
-      }
-      map.set(student.id, count > 0 ? sum / count : null);
-    }
-    return map;
-  }, [students, tasks, submissionMap]);
 
   if (loading) {
     return (
@@ -124,7 +106,7 @@ export default function BlankScoresPage({ params }: Props) {
               <div className="flex items-center gap-2 mb-2">
                 <School className="w-5 h-5 text-white/80 flex-shrink-0" />
                 <span className="text-sm text-white/70 font-medium">
-                  Blank Task Scores
+                  Blank Task Score
                 </span>
               </div>
               <h1 className="text-xl md:text-3xl font-bold mb-1 truncate">
@@ -186,15 +168,11 @@ export default function BlankScoresPage({ params }: Props) {
                           </div>
                         </th>
                       ))}
-                      <th className="sticky right-0 bg-gray-50 z-10 text-center px-3 py-3 font-semibold text-text-secondary min-w-[80px] border-l border-border">
-                        Avg
-                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {students.map((student, rowIndex) => {
                       const isEven = rowIndex % 2 === 0;
-                      const avg = studentAverage.get(student.id) ?? null;
 
                       return (
                         <tr
@@ -257,29 +235,6 @@ export default function BlankScoresPage({ params }: Props) {
                               </td>
                             );
                           })}
-
-                          {/* Average */}
-                          <td className={`sticky right-0 z-10 px-3 py-3 text-center border-l border-border ${
-                            isEven ? "bg-gray-100/80 hover:bg-blue-50/50" : "bg-gray-200/80 hover:bg-blue-50/50"
-                          }`}>
-                            {avg !== null ? (
-                              <span
-                                className={`font-semibold text-sm ${
-                                  avg >= 80
-                                    ? "text-green-600"
-                                    : avg >= 60
-                                    ? "text-amber-600"
-                                    : "text-red-500"
-                                }`}
-                              >
-                                {Math.round(avg)}
-                              </span>
-                            ) : (
-                              <span className="text-text-secondary/40 text-xs italic">
-                                —
-                              </span>
-                            )}
-                          </td>
                         </tr>
                       );
                     })}
