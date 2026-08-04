@@ -576,7 +576,7 @@ function StudentTasksPage({
           </p>
           <h1 className="text-2xl font-bold text-text">Your Tasks</h1>
           <p className="text-sm text-text-secondary mt-1">
-            Submit your assignment links here
+            Submit your assignment here
           </p>
         </div>
 
