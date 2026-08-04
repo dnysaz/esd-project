@@ -324,7 +324,7 @@ export default function BlankAnswerPage({ params }: Props) {
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               placeholder="Start writing your answer here..."
-              className="w-full min-h-[55vh] sm:min-h-[60vh] bg-transparent border-none outline-none resize-none text-base sm:text-lg leading-relaxed text-text placeholder:text-text-secondary/40"
+              className="w-full flex-1 min-h-[35vh] bg-transparent border-none outline-none resize-none text-base sm:text-lg leading-relaxed text-text placeholder:text-text-secondary/40"
               autoFocus
               autoComplete="off"
               spellCheck={false}
