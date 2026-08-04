@@ -208,7 +208,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-var(--navbar-safe))] animate-fade-in">
+      <div className="min-h-[calc(100vh_-_var(--navbar-safe))] animate-fade-in">
         <main className="max-w-7xl mx-auto px-4 md:px-8 py-2">
           {/* Back button skeleton */}
           <div className="skeleton h-8 w-28 rounded-full mb-2" />
@@ -241,7 +241,7 @@ export default function ClassSubmissionsPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-var(--navbar-safe))] animate-fade-in">
+    <div className="min-h-[calc(100vh_-_var(--navbar-safe))] animate-fade-in">
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-2">
         {/* Back button */}
         <Link href={`/dashboard/${classId}`} className="btn-ghost mb-2 -ml-2">

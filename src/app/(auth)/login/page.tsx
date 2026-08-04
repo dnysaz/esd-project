@@ -9,7 +9,7 @@ import LoginForm from "./login-form";
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-[calc(100vh-var(--navbar-safe))] flex items-center justify-center px-4 py-12">
+      <div className="min-h-[calc(100vh_-_var(--navbar-safe))] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md animate-fade-in">
           <div className="skeleton w-16 h-16 rounded-full mx-auto mb-4" />
           <div className="skeleton h-8 w-48 mx-auto mb-2" />

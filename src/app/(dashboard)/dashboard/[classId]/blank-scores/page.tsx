@@ -67,7 +67,7 @@ export default function BlankScoresPage({ params }: Props) {
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-var(--navbar-safe))] animate-fade-in">
+      <div className="min-h-[calc(100vh_-_var(--navbar-safe))] animate-fade-in">
         <main className="max-w-7xl mx-auto px-4 md:px-8 py-2">
           <div className="skeleton h-8 w-28 rounded-full mb-2" />
           <div className="bg-gray-100 rounded-xl p-4 md:p-5 mb-4 border border-border">
@@ -91,7 +91,7 @@ export default function BlankScoresPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-var(--navbar-safe))] animate-fade-in">
+    <div className="min-h-[calc(100vh_-_var(--navbar-safe))] animate-fade-in">
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-2">
         {/* Back button */}
         <Link href={`/dashboard/${classId}`} className="btn-ghost mb-2 -ml-2">
