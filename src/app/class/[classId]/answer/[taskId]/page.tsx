@@ -3,7 +3,7 @@
 import { use, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, ChevronDown, Check, Loader2, Ban } from "lucide-react";
+import { ArrowLeft, ChevronDown, Check, Loader2 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import type { Task } from "@/types";
 
@@ -277,7 +277,7 @@ export default function BlankAnswerPage({ params }: Props) {
       </header>
 
       {/* Blank paper body */}
-      <main className="flex-1 w-full max-w-4xl mx-auto px-6 md:px-10 pt-20 pb-20">
+      <main className="flex-1 w-full max-w-4xl mx-auto px-6 md:px-10 pt-20 pb-5 flex flex-col">
         {task && (
           <>
             {/* Question */}
@@ -353,7 +353,7 @@ export default function BlankAnswerPage({ params }: Props) {
               </div>
             )}
 
-            <p className="mt-4 text-xs text-text-secondary/50">
+            <p className="mt-auto pt-6 text-xs text-text-secondary/50">
               Your answer is saved automatically in this browser and will only
               be sent to your lecturer once you press Submit.
             </p>
@@ -375,13 +375,10 @@ export default function BlankAnswerPage({ params }: Props) {
 
       {/* Blocked action toast */}
       {showBlockedToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] animate-fade-in">
-          <div className="flex items-center gap-2.5 bg-gray-900 text-white text-sm font-medium rounded-full px-5 py-3 shadow-xl">
-            <Ban className="w-4 h-4 text-red-400 flex-shrink-0" />
-            <span>
-              Copy & paste is disabled. Please type your answer.
-            </span>
-          </div>
+        <div className="fixed bottom-16 left-0 right-0 z-[300] px-6 flex justify-center animate-fade-in">
+          <p className="text-xs sm:text-sm text-danger font-medium text-center max-w-md leading-snug">
+            Copy & paste is disabled. Please type your answer.
+          </p>
         </div>
       )}
     </div>
