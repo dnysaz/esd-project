@@ -1,9 +1,9 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, ChevronDown, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronDown, Check, Loader2, Ban } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import type { Task } from "@/types";
 
@@ -30,8 +30,23 @@ export default function BlankAnswerPage({ params }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [showBlockedToast, setShowBlockedToast] = useState(false);
+  const blockedToastRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const backToTasks = () => router.push(`/class/${classId}`);
+
+  const showBlockedActionToast = () => {
+    setShowBlockedToast(true);
+    if (blockedToastRef.current) clearTimeout(blockedToastRef.current);
+    blockedToastRef.current = setTimeout(() => setShowBlockedToast(false), 2600);
+  };
+
+  // Clear the toast timer on unmount
+  useEffect(() => {
+    return () => {
+      if (blockedToastRef.current) clearTimeout(blockedToastRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     async function init() {
@@ -313,10 +328,22 @@ export default function BlankAnswerPage({ params }: Props) {
               autoFocus
               autoComplete="off"
               spellCheck={false}
-              onCopy={(e) => e.preventDefault()}
-              onCut={(e) => e.preventDefault()}
-              onPaste={(e) => e.preventDefault()}
-              onDrop={(e) => e.preventDefault()}
+              onCopy={(e) => {
+                e.preventDefault();
+                showBlockedActionToast();
+              }}
+              onCut={(e) => {
+                e.preventDefault();
+                showBlockedActionToast();
+              }}
+              onPaste={(e) => {
+                e.preventDefault();
+                showBlockedActionToast();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                showBlockedActionToast();
+              }}
               onContextMenu={(e) => e.preventDefault()}
             />
 
@@ -345,6 +372,18 @@ export default function BlankAnswerPage({ params }: Props) {
         cancelText="Stay"
         variant="warning"
       />
+
+      {/* Blocked action toast */}
+      {showBlockedToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] animate-fade-in">
+          <div className="flex items-center gap-2.5 bg-gray-900 text-white text-sm font-medium rounded-full px-5 py-3 shadow-xl">
+            <Ban className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <span>
+              Copy & paste is disabled. Please type your answer.
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
