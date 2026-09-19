@@ -11,6 +11,17 @@ interface Props {
   params: Promise<{ classId: string }>;
 }
 
+// Format: DD/MM/YYYY HH:MM — compact for score cells, e.g. "19/09/2026 14:35"
+function formatCompactDateTime(iso: string) {
+  const d = new Date(iso);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+}
+
 export default function BlankScoresPage({ params }: Props) {
   const { classId } = use(params);
   const router = useRouter();
@@ -212,21 +223,31 @@ export default function BlankScoresPage({ params }: Props) {
                                 }`}
                               >
                                 {hasScore ? (
-                                  <span
-                                    className={`font-semibold text-sm ${
-                                      score >= 80
-                                        ? "text-green-600"
-                                        : score >= 60
-                                        ? "text-amber-600"
-                                        : "text-red-500"
-                                    }`}
-                                  >
-                                    {score}
-                                  </span>
+                                  <div className="flex flex-col items-center gap-0.5">
+                                    <span
+                                      className={`font-semibold text-sm ${
+                                        score >= 80
+                                          ? "text-green-600"
+                                          : score >= 60
+                                          ? "text-amber-600"
+                                          : "text-red-500"
+                                      }`}
+                                    >
+                                      {score}
+                                    </span>
+                                    <span className="text-[10px] text-text-secondary/60 whitespace-nowrap leading-none">
+                                      {formatCompactDateTime(sub!.submitted_at)}
+                                    </span>
+                                  </div>
                                 ) : sub ? (
-                                  <span className="text-text-secondary/50 text-xs italic">
-                                    Pending
-                                  </span>
+                                  <div className="flex flex-col items-center gap-0.5">
+                                    <span className="text-text-secondary/50 text-xs italic">
+                                      Pending
+                                    </span>
+                                    <span className="text-[10px] text-text-secondary/60 whitespace-nowrap leading-none">
+                                      {formatCompactDateTime(sub.submitted_at)}
+                                    </span>
+                                  </div>
                                 ) : (
                                   <span className="text-text-secondary/40 text-xs italic">
                                     —
